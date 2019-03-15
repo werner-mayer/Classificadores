@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Classificadores
@@ -9,12 +8,8 @@ namespace Classificadores
     {
         static void Main(string[] args)
         {
-
             List<Flower> flores = Flower.GetFlowers();
-
-
             var floresDistintas = flores.Select(x => x.Class).Distinct();
-
             List<Flower> trainData = new List<Flower>();
             List<Flower> ShuffleFlores2 = new List<Flower>();
             List<Flower> ShuffleFlores3 = new List<Flower>();
@@ -30,17 +25,15 @@ namespace Classificadores
 
             var rand = new Random();
             trainData = trainData.OrderBy(x => rand.Next()).ToList();
-    
+            ShuffleFlores2 = ShuffleFlores2.OrderBy(x => rand.Next()).ToList();
             int numClasses = 3;
             int k = 1;
-
-            double[] unknown = { 5.5, 2.5, 4.0, 1.3 };
             int acertos = 0;
-            int j = 0;
+            int j = 1;
+
             foreach (Flower flower in ShuffleFlores2)
             {
                 int Class = Flower.Classify(flower.Features, trainData, numClasses, k);
-
                 string flor = "";
 
                 if (Class == 0)
@@ -50,18 +43,16 @@ namespace Classificadores
                 if (Class == 2)
                     flor = "Iris-virginica";
 
-                if (flower.Class == Class)
-                    acertos++;
+                Console.WriteLine(j++ + " - " + flor);
 
-                Console.WriteLine(trainData[j].Class + " - " + Class);
-                j++;
+                if (flower.Class == Class)
+                    acertos++;        
             }
+
             Console.WriteLine($"\nTotal de testes: {ShuffleFlores2.Count}");
             Console.WriteLine($"\nTotal de acertos: {acertos}" );
             Console.WriteLine($"\nPorcentagem de acertos: {100 * acertos / ShuffleFlores2.Count}%");
-
             Console.WriteLine("");
-
         }
     }
 }
