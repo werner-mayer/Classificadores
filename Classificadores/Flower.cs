@@ -15,13 +15,32 @@ namespace Classificadores
             Features[1] = sepalWidth;
             Features[2] = petalLenght;
             Features[3] = petalWidth;
+            Class = GetFlowerCode(name);
+        }
+
+        public static int GetFlowerCode(string name)
+        {
+            int flor = 0;
             if (name == "Iris-setosa")
-                Class = 0;
+                flor =  0;
             if (name == "Iris-versicolor")
-                Class = 1;
+                flor = 1;
             if (name == "Iris-virginica")
-                Class = 2;
-        }   
+                flor = 2;
+            return flor;
+        }
+
+        public static string GetFlowerName(int code)
+        {
+            string flor = "";
+            if (code == 0)
+                flor = "Iris-setosa";
+            if (code == 1)
+                flor = "Iris-versicolor";
+            if (code == 2)
+                flor = "Iris-virginica";
+            return flor;
+        }
 
         public static double Distance(double[] a, double[] b)
         {
@@ -31,7 +50,7 @@ namespace Classificadores
             return Math.Sqrt(sum);
         }
 
-        public static int Classify(double[] unknown, List<Flower> trainData, int numClasses, int k)
+        public static string Classify(double[] unknown, List<Flower> trainData, int numClasses, int k)
         {
             int n = trainData.Count;
             IndexAndDistance[] info = new IndexAndDistance[n];
@@ -46,7 +65,7 @@ namespace Classificadores
             Array.Sort(info);     
 
             int result = Vote(info, trainData, numClasses, k);
-            return result;  
+            return GetFlowerName(result);  
         } 
 
         private static int Vote(IndexAndDistance[] info, List<Flower> trainData, int numClasses, int k)
@@ -71,7 +90,6 @@ namespace Classificadores
             }
             return theChosenOne;
         }
-
         public static List<Flower> GetFlowers()
             {
                 List<Flower> flores = new List<Flower>();
@@ -87,3 +105,4 @@ namespace Classificadores
             }
         }
 }
+    
