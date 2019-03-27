@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Classificadores.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Classificadores
         public int Class { get; set; }
         public string Name { get; set; }        
         public bool Trocar { get; set; }
+        public bool Trocado { get; set; }
 
         public Seed(double x1, double x2, double x3, double x4, double x5, double x6, double x7, int name)
         {
@@ -25,6 +27,7 @@ namespace Classificadores
             Class = ClassToIndex(name);
             Name = name.ToString();            
             Trocar = false;
+            Trocado = false;
         }
         
         public int ClassToIndex(int name)

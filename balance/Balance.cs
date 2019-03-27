@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Classificadores.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Classificadores
         public int Class { get; set; }
         public string Name { get; set; }
         public bool Trocar { get; set; }
+        public bool Trocado { get; set; }
 
         public Balance(double leftWeigth, double leftDistance, double rightWeigth, double rightDistance, string name)
         {

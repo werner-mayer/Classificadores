@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Classificadores.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace Classificadores
         public int Class { get; set; }
         public string Name { get; set; }        
         public bool Trocar { get; set; }
+        public bool Trocado { get; set; }
+
 
         public Flower(double sepalLenght, double sepalWidth, double petalLenght, double petalWidth, string name)
         {
@@ -22,6 +25,7 @@ namespace Classificadores
             Class = GetFlowerCode(name);
             Name = name;
             Trocar = false;
+            Trocado = false;
         }
 
         public static int GetFlowerCode(string name)

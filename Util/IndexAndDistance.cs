@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Classificadores
+namespace Classificadores.Util
 {
     public class IndexAndDistance : IComparable<IndexAndDistance>
     {

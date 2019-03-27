@@ -32,30 +32,31 @@ namespace Classificadores
             int acertos = 0;           
 
             List<List<Seed>> trainList = new List<List<Seed>>();
+            
+            int[] treinos = new int[2];
 
-            int qtdTreinos = 200;
-            int[] contador = new int[qtdTreinos];
-
-            for (var i = 0; i < qtdTreinos; i++)
+            for (var i = 0; i < treinos.Length; i++)
             {
                 var g = 0;
-                avaliacao = avaliacao.OrderBy(a => Guid.NewGuid()).ToList();
-                trainData = trainData.OrderBy(a => Guid.NewGuid()).ToList();
                 foreach (var semente in avaliacao)
                 {                    
                     int seed = Seed.Classify(semente.Features, trainData, numClasses, k);
 
                     if (semente.Class != seed)
                     {
-                        if (semente.Trocar == false && trainData[g].Trocar == false)
-                        {
-                            trainData[g] = avaliacao.Where(x => x.Class == trainData[g].Class && x.Trocar == false).FirstOrDefault();
-                            semente.Trocar = true;
-                            trainData[g].Trocar = true;
-                            contador[i]++;
-                        }
+                        trainData[g].Trocar = true;
+                        treinos[i]++;                        
                     }
                     g++;
+                }
+                for(var jj = 0; jj < avaliacao.Count; jj++)
+                {
+                    if(trainData[jj].Trocar == true && trainData[jj].Trocado == false)
+                    {
+                        trainData[jj] = avaliacao.Where(c => c.Class == trainData[jj].Class && c.Trocado == false).FirstOrDefault();
+                        trainData[jj].Trocado = true;
+                        avaliacao[jj].Trocado = true;
+                    }
                 }
                 trainList.Add(trainData);
              }
@@ -63,11 +64,11 @@ namespace Classificadores
             int bestClass = int.MaxValue;
             int theChosenOne = 0;
 
-            for (var x = 0; x < qtdTreinos; x++)
+            for (var x = 0; x < treinos.Length; x++)
             {
-                if (contador[x] < bestClass)
+                if (treinos[x] < bestClass)
                 {
-                    bestClass = contador[x];
+                    bestClass = treinos[x];
                     theChosenOne = x;
                 }
             }
