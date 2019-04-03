@@ -24,6 +24,7 @@ namespace Classificadores
             Class = GetBalanceCode(name);
             Name = name;
             Trocar = false;
+            Trocado = false;
         }
 
         public static int GetBalanceCode(string name)
@@ -50,22 +51,27 @@ namespace Classificadores
             return balance;
         }
 
-        public static double Distance(double[] a, double[] b)
+        public static double Distance(double[] a, double[] b, bool euclidiana)
         {
             double sum = 0;
-            for (int i = 0; i < a.Length; i++)
-                sum += Math.Pow(a[i] - b[i], 2);
-            return Math.Sqrt(sum);
+            if (euclidiana)
+            {
+                for (int i = 0; i < a.Length; i++)
+                    sum += Math.Pow(a[i] - b[i], 2);
+                return Math.Sqrt(sum);
+            }
+            else
+                return Accord.Math.Distance.Manhattan(a, b);
         }
 
-        public static string Classify(double[] unknown, List<Balance> trainData, int numClasses, int k)
+        public static string Classify(double[] unknown, List<Balance> trainData, int numClasses, int k, bool euclidiana)
         {
             int n = trainData.Count;
             IndexAndDistance[] info = new IndexAndDistance[n];
             for (int i = 0; i < n; i++)
             {
                 IndexAndDistance current = new IndexAndDistance();
-                double dist = Distance(unknown, trainData[i].Features);
+                double dist = Distance(unknown, trainData[i].Features, euclidiana);
                 current.idx = i;
                 current.dist = dist;
                 info[i] = current;
@@ -121,7 +127,16 @@ namespace Classificadores
             foreach (var balances in dataSet.GroupBy(f => f.Name))
             {
                 var list = new List<Balance>();
-                foreach (Balance balance in balances)
+                var rnd = new Random();
+
+                var query =
+                    from i in balances
+                    let r = rnd.Next()
+                    orderby r
+                    select i;
+
+                var shuffled = query.ToList();
+                foreach (Balance balance in shuffled)
                 {
                     list.Add(balance);
                 }

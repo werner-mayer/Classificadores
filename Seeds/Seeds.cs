@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Accord.Math.Distances;
 
 namespace Classificadores
 {
@@ -52,22 +53,27 @@ namespace Classificadores
             return name;
         }
 
-        public static double Distance(double[] a, double[] b)
+        public static double Distance(double[] a, double[] b, bool euclidiana)
         {
             double sum = 0;
-            for (int i = 0; i < a.Length; i++)
-                sum += Math.Pow(a[i] - b[i], 2);
-            return Math.Sqrt(sum);
+            if (euclidiana)
+            {
+                for (int i = 0; i < a.Length; i++)
+                    sum += Math.Pow(a[i] - b[i], 2);
+                return Math.Sqrt(sum);
+            }
+            else
+                return Accord.Math.Distance.Manhattan(a, b);
         }
 
-        public static int Classify(double[] unknown, List<Seed> trainData, int numClasses, int k)
+        public static int Classify(double[] unknown, List<Seed> trainData, int numClasses, int k, bool euclidiana)
         {
             int n = trainData.Count;
             IndexAndDistance[] info = new IndexAndDistance[n];
             for (int i = 0; i < n; i++)
             {
                 IndexAndDistance current = new IndexAndDistance();
-                double dist = Distance(unknown, trainData[i].Features);
+                double dist = Distance(unknown, trainData[i].Features, euclidiana);
                 current.idx = i;
                 current.dist = dist;
                 info[i] = current;
@@ -122,8 +128,17 @@ namespace Classificadores
             List<Seed> dataSet = GetSeeds();
             foreach (var seeds in dataSet.GroupBy(f => f.Name))
             {
+                var rnd = new Random();
+
+                var query =
+                    from i in seeds
+                    let r = rnd.Next()
+                    orderby r
+                    select i;
+
+                var shuffled = query.ToList();
                 var list = new List<Seed>();
-                foreach (Seed seed in seeds)
+                foreach (Seed seed in shuffled)
                 {
                     list.Add(seed);
                 }
